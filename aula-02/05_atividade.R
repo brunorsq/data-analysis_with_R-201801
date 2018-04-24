@@ -12,6 +12,8 @@ load("aula-02/data/dados_exercicio.RData")
 ##         quero ver uma saída na Console.
 ### # ####
 
+str(acessos_alunos)
+view(acessos_alunos)
 
 
 ### 2 ###
@@ -20,7 +22,7 @@ load("aula-02/data/dados_exercicio.RData")
 ## Dica: Vimos um exemplo no mesmo material sobre estruturas de dados
 ### # ###
 
-
+print(length(acessos_alunos))
 
 ### 3 ###
 ## Utilizando o seu código de aluno da Uniritter como nome de um valor da lista, imprima uma linha informando quantos acessos
@@ -31,7 +33,7 @@ load("aula-02/data/dados_exercicio.RData")
 ## Dica 2: Vimos exemplos disto nos materiais dos tipos numéricos e das estruturas de dados.
 ### # ###
 
-
+paste("O aluno alu201420317 realizou",acessos_alunos["alu201420317"],"acessos")
 
 ### 4 ###
 ## A operação abaixo cria um vetor com todas as quantidades de acessos por aluno.
@@ -40,8 +42,11 @@ acessos <- unlist(acessos_alunos)
 ## Após a criação deste vetor, determine quantos colegas fizeram mais acessos que você.
 ## Faça isso em 3 etapas: 
 ## 1. Crie uma variável com o resultado de um teste de comparação (relacional) entre o seu número de acessos e os demais.
+comparacao <- acessos > 11
 ## 2. Com uma operação de indexação, crie um outro vetor contendo somente os valores maiores
+valores_maiores <- acessos[comparacao]
 ## 3. Determine o tamanho do vetor da operação 2, imprimindo o resultado na Console
+print(length(valores_maiores))
 ### # ###
 
 
@@ -49,7 +54,7 @@ acessos <- unlist(acessos_alunos)
 ### 5 ###
 ## Combine todas as etapas acima em uma única chamada, sem a criação dos vetores auxiliares
 ### # ###
-
+print(length(acessos_alunos[acessos_alunos>11]))
 
 
 ### 6 ###
@@ -58,7 +63,7 @@ acessos <- unlist(acessos_alunos)
 
 ## Dica: Lembre que falamos sobre como o R faz conversões implícitas entre o tipo lógico e tipos numéricos
 ### # ###
-
+print(sum(acessos_alunos<11))
 
 
 ### 7 ###
@@ -72,7 +77,10 @@ acessos <- unlist(acessos_alunos)
 ## OBSERVAÇÃO :: Não avaliarei participação na forma do enunciado deste exercício. 
 ### # ###
 
-
+notas <- acessos
+notas[notas == 0] <- 0
+notas[notas < 10 & notas > 0] <- 1
+notas[notas >= 10] <- 2
 
 ### 8 ###
 ## Visualização da quantidade de alunos com cada nota de participação. Esta não é uma atividade, apenas uma ilustração de como
