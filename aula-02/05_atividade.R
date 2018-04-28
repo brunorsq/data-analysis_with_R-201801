@@ -13,8 +13,6 @@ load("aula-02/data/dados_exercicio.RData")
 ### # ####
 
 str(acessos_alunos)
-view(acessos_alunos)
-
 
 ### 2 ###
 ## Quantos elementos a variável acessos_alunos possui? Utilize uma função do R que retorna o tamanho da variável.
@@ -33,20 +31,27 @@ print(length(acessos_alunos))
 ## Dica 2: Vimos exemplos disto nos materiais dos tipos numéricos e das estruturas de dados.
 ### # ###
 
-paste("O aluno alu201420317 realizou",acessos_alunos["alu201420317"],"acessos")
+paste("O aluno alu201420317 realizou",acessos_alunos[["alu201420317"]],"acessos")
 
 ### 4 ###
 ## A operação abaixo cria um vetor com todas as quantidades de acessos por aluno.
+
 acessos <- unlist(acessos_alunos)
 
 ## Após a criação deste vetor, determine quantos colegas fizeram mais acessos que você.
 ## Faça isso em 3 etapas: 
 ## 1. Crie uma variável com o resultado de um teste de comparação (relacional) entre o seu número de acessos e os demais.
+
 comparacao <- acessos > 11
+
 ## 2. Com uma operação de indexação, crie um outro vetor contendo somente os valores maiores
+
 valores_maiores <- acessos[comparacao]
+
 ## 3. Determine o tamanho do vetor da operação 2, imprimindo o resultado na Console
+
 print(length(valores_maiores))
+
 ### # ###
 
 
@@ -54,6 +59,7 @@ print(length(valores_maiores))
 ### 5 ###
 ## Combine todas as etapas acima em uma única chamada, sem a criação dos vetores auxiliares
 ### # ###
+
 print(length(acessos_alunos[acessos_alunos>11]))
 
 
@@ -63,6 +69,7 @@ print(length(acessos_alunos[acessos_alunos>11]))
 
 ## Dica: Lembre que falamos sobre como o R faz conversões implícitas entre o tipo lógico e tipos numéricos
 ### # ###
+
 print(sum(acessos_alunos<11))
 
 
@@ -85,32 +92,69 @@ notas[notas >= 10] <- 2
 ### 8 ###
 ## Visualização da quantidade de alunos com cada nota de participação. Esta não é uma atividade, apenas uma ilustração de como
 ## criar uma tabela com esta contagem
+
 table(notas)
-
-
 
 ### 9 ###
 ## Abaixo, criei uma versão modificada da lista acessos_alunos, com a inclusão de um acesso convidado.
 ## Não foi possível determinar o número de acessos por não existir um login para este tipo de acesso.
+
 acessos_alunos_e_guest <- acessos_alunos
 acessos_alunos_e_guest$guest <- NA
 
 ## Repita as atividades 4, 5, 6, e 7 utilizando o acessos_com_guest no lugar da lista acessos_alunos.
 ## Tome o devido cuidado de sempre criar variáveis com nomes diferentes das já utilizadas! 
 
+## 4
 
+acessos_guest <- unlist(acessos_alunos_e_guest)
+
+## 4.1
+
+comparacao_guest <- acessos_guest > 11
+
+## 4.2
+
+valores_maiores_guest <- acessos_guest[comparacao_guest]
+
+## 4.3
+
+print(length(valores_maiores_guest))
+
+## 5
+
+print(length(acessos_alunos_e_guest[acessos_alunos_e_guest>11]))
+
+## 6
+
+print(sum(acessos_alunos_e_guest<11))
+
+## 7
+
+notas_guest <- acessos_guest
+notas_guest[notas_guest == 0] <- 0
+notas_guest[notas_guest < 10 & notas_guest > 0] <- 1
+notas_guest[notas_guest >= 10] <- 2
 
 ### 10 ###
 ## Responda as seguintes perguntas:
 
 
 # 1. Houve modificação no número de alunos com mais e com menos acessos que você?
+# R: Sim, aumentou 1 dos resultados.
 
 # 2. Como você conclui que o R trata comparações (operações relacionais) entre valores numéricos e NA?
+# R: Para o R, idependente da comparação realizada, o NA será considerado verdade, Ou seja, NA > 1 = TRUE, NA < 1 = TRUE, NA = 1 = TRUE
 
 # 3. Qual o resultado do uso da função sum na presença de NA? O que você conclui sobre a operação de soma de todos os valores de
 #    um vetor na presença de NA?
+# R: Operações realizadas com NA resultarão em NA.
 
 # 4. Execute o comando abaixo para ler a documentação da função sum e veja se há como modificar a chamada da função sum na presença
 #    de NAs. Teste os exemplos da página de help da função sum.
+
 help(sum)
+
+# R: Caso seja informado o argumento na.rm com o valor TRUE os valores NA são removidos da operação.
+
+print(sum(acessos_alunos_e_guest<11,na.rm = TRUE))
