@@ -1,0 +1,253 @@
+#' ---
+#' title: "Data Frames, dplyr & lubridate"
+#' output:
+#'   html_document:
+#'     df_print: paged
+#' ---
+#' 
+## ----echo=FALSE, message=FALSE, warning=FALSE----------------------------
+library(tidyverse)
+
+#' 
+#' 
+#' ## Data Frame
+#' 
+#' Estrutura composta de lista de vetores de diferentes tipos de dados, cada vetor com o mesmo número de elementos.
+#' 
+#' #### Exemplo de um Data Frame
+#' 
+#' ```
+#' A construção de um Data Frame no código não é comum, e neste caso serve de exemplo didático. Um caso válido é a construção de dicionários (de-para) que serão utilizados de forma combinada com outros Data Frames. É um assunto para outra aula.
+#' ```
+#' 
+## ----"Create Example", warning=FALSE, message=FALSE----------------------
+library(tibble)
+library(lubridate)
+
+ex1 <- data_frame( vec1 = c(1980, 1990, 2000, 2010)
+                 , vec2 = c(1L, 2L, 3L, 4L)
+                 , vec3 = c("low", "low", "high", "high")
+                 , vec4 = c(TRUE, FALSE, FALSE, FALSE)
+                 , vec5 = ymd( c( "2017-05-23", "1776/07/04", 
+                                  "1983-05/31", "1908/04-01" )))
+
+ex1
+
+#' 
+#' ## lubridate :: Operações com data e hora
+#' 
+#' ![](https://lubridate.tidyverse.org/logo.png)
+#' 
+#' [Site oficial](https://lubridate.tidyverse.org/index.html)
+#' 
+#' É uma biblioteca de tipos e funções que facilitam as operações com datas e horas em R. Veremos exemplos ao longo dos códigos utilizados nesta aula e nas próximas.
+#' 
+#' ## dplyr :: Gramática para transformações de dados
+#' 
+#' ![](https://dplyr.tidyverse.org/logo.png)
+#' 
+#' [Do site oficial](https://dplyr.tidyverse.org/index.html): "dplyr é uma gramática de manipulação de dados, fornecendo um conjunto consistente de verbos que ajudam a resolver os desafios mais comuns de manipulação de dados."
+#' 
+#' __dplyr__ não é a única opção para lidar com transformações de dados na linguagem R, mas é a mais intuitiva (minha opinião).
+#' 
+#' Outra importante razão para conhecer e se aprofundar na biblioteca é sua integração com diferentes fontes de dados (memória, bancos de dados relacionais, motores de processamento de grandes volumes, e serviços em nuvem).
+#' 
+#' ## Os 5 verbos mais utilizados
+#' 
+#' ### select
+#' 
+#' - Escolha de subconjunto de colunas pelo nome:
+#' 
+## ----"Select By Name"----------------------------------------------------
+ex1 %>% 
+  select(vec1, vec5)
+
+#' 
+#' - Escolha de subconjunto de colunas em um intervalo:
+#' 
+## ----"Select By Range"---------------------------------------------------
+ex1 %>% 
+  select(vec2:vec4)
+
+#' 
+#' - Escolha de subconjunto por exclusão:
+#' 
+## ----"Select By Removing"------------------------------------------------
+ex1 %>% 
+  select(-vec3)
+
+#' 
+#' - Escolha de coluna por predicado:
+#' 
+## ----"Select By Predicate"-----------------------------------------------
+ex1 %>% 
+  select_if(.predicate = is.integer)
+
+#' 
+#'     
+#' ### mutate
+#' 
+#' - Modificação de uma coluna:
+#' 
+## ----"Mutate Column"-----------------------------------------------------
+ex1 %>% 
+  mutate( vec3 = str_to_upper(vec3) )
+
+#' 
+#' - Criação de uma nova coluna:
+#' 
+## ----"Mutate Creating"---------------------------------------------------
+ex1 %>% 
+  mutate( vec6 = vec5 + months(vec2) )
+
+#' 
+#' - Criação de uma nova coluna e reuso na mesma operação:
+#'     
+## ----"Mutate Creating and Modifying"-------------------------------------
+ex1 %>% 
+  mutate( vec6 = vec5 + duration(num = vec2 * 2, units = "months")
+        , vec7 = year(vec6) - vec1 )
+
+#' 
+#' - Outro exemplo com tipos da biblioteca Lubridate
+#'     
+## ----"Mutate Creating and Modifying Lubridate Duration"------------------
+ex1 %>% 
+  mutate( vec6 = vec5 + duration(num = vec2 * 2, units = "months")
+        , vec7 = year(vec6) - vec1 )
+
+#' 
+#' - Para discussão:
+#'     - Por que vec6 agora possui horas?
+#'     - O que ocorre se trocarmos a soma com `duration` por uma soma com `months` tal como no exemplo anterior mas com a multiplicação por 2?
+#'     - E se quisermos meses exatos?
+#' 
+## ----"Mutate Adding Months"----------------------------------------------
+ex1 %>% 
+  mutate( vec6 = vec5 %m+% months(vec2 * 2)
+        , vec7 = year(vec6) - vec1 )
+
+#' 
+#' - Modificação de colunas de um determinado tipo:
+#'     
+## ----"Mutate By Type"----------------------------------------------------
+ex1 %>% 
+  mutate_if(.predicate = is_integer, ~ floor(.x * 1.5))
+
+#' 
+#' - Criação de novas colunas dinamicamente a partir de aplicação de fuções
+#'     
+## ----"Mutate By Type New Vars"-------------------------------------------
+ex1 %>% 
+  mutate(vec1 = as.integer(vec1)) %>%
+  mutate_if(.predicate = is_integer, .funs = funs(plus_50_perc = floor(. * 1.5)))
+
+#' 
+#' 
+#' ### filter
+#' 
+#' - Filtros por operadores relacionais
+#' 
+## ----"Filter By Relation"------------------------------------------------
+ex1 %>% 
+  filter(vec1 > year(vec5))
+
+#' 
+#' - Filtros por variável `logical`
+#' 
+## ----"Filter By Logical Variable"----------------------------------------
+ex1 %>% 
+  filter(vec4)
+
+#' 
+#' ### summarise / summarize
+#' 
+#' - Sumarização com múltiplas funções em todas as variáveis
+#'     - O que houve com a variável `logical`?
+#' 
+## ----"Summarise All"-----------------------------------------------------
+ex1 %>% summarise_all(.funs = funs(min, max))
+
+#' 
+#' - Contagem
+#' 
+## ----"Summarize Size with n"---------------------------------------------
+ex1 %>% summarise(size = n())
+
+#' 
+#' - Contagem de valores distintos
+#' 
+## ----"Summarise Distinct Values"-----------------------------------------
+ex1 %>% summarise(vec4_distinct = n_distinct(vec4))
+
+#' 
+#' - Contagem __por__ valores distintos (atalho)
+#' 
+## ----"Summarise count shortcut"------------------------------------------
+ex1 %>% count(vec4)
+
+#' 
+#' ### arrange
+#' 
+#' - Ordem __crescente__ de data
+#' 
+## ----"Arrange by vec5"---------------------------------------------------
+ex1 %>% arrange(vec5)
+
+#' - Ordem __decrescente__ de data por ordem __crescente__ (???) de nível
+#'     - Veremos como lidar com variáveis categóricas na próxima aula
+#' 
+## ----"Strange arrange"---------------------------------------------------
+ex1 %>% arrange(vec3, desc(vec5))
+
+#' 
+#' ## Grupos (grouped data frame)
+#' 
+#' Todas as operações vistas até aqui atuam sobre a totalidade dos registros do Data Frame. Estas operações podem ser utilizadas em grupos de dados formados por uma ou mais variáveis de mesmo valor. A forma de aplicar estas operações é a mesma, mas o Data Frame não. Abaixo um exemplo de criação de grupo:
+#' 
+## ------------------------------------------------------------------------
+ex1 %>% group_by(vec3)
+
+#' 
+#' Aparentemente não tivemos alteração, mas vamos avaliar as classes atribuídas ao objeto resultante da operação de agrupamento.
+#' 
+## ------------------------------------------------------------------------
+ex1 %>% group_by(vec3) %>% class()
+
+#' 
+#' - Sumarizações em grupos
+#' 
+## ------------------------------------------------------------------------
+ex1 %>% 
+  group_by(vec4) %>%
+  summarise(qtde = n()) %>%
+  ungroup() ## importante desagrupar após o término das operações em nível de grupo
+
+#' 
+#' - Diferença entre `mutate()` e `summarise()` sobre grupos
+#' 
+## ------------------------------------------------------------------------
+ex1 %>% 
+  group_by(vec4) %>%
+  mutate(qtde = n()) %>%
+  ungroup() ## importante desagrupar após o término das operações em nível de grupo
+
+#' 
+#' - Filtro dentro de grupo
+#' 
+## ------------------------------------------------------------------------
+ex1 %>% 
+  group_by(vec4) %>%
+  filter(vec2 == n()) %>%
+  ungroup() ## importante desagrupar após o término das operações em nível de grupo
+
+#' 
+#' - Variação do mesmo filtro
+#' 
+## ------------------------------------------------------------------------
+ex1 %>% 
+  group_by(vec4) %>%
+  mutate(qtde = n()) %>%
+  ungroup() %>%
+  filter(vec2 == qtde)
+

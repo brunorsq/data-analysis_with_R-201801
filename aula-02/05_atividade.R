@@ -10,17 +10,21 @@ load("aula-02/data/dados_exercicio.RData")
 ## Dica 1: No material sobre estruturas de dados vimos como exibir uma prévia do conteúdo de uma variável com 2 funções diferentes
 ## Dica 2: Na primeira aula vimos uma função do RStudio que permite visualizar o conteúdo de uma variável, mas neste caso 
 ##         quero ver uma saída na Console.
-### # ####
 
 str(acessos_alunos)
+
+### # ####
 
 ### 2 ###
 ## Quantos elementos a variável acessos_alunos possui? Utilize uma função do R que retorna o tamanho da variável.
 
 ## Dica: Vimos um exemplo no mesmo material sobre estruturas de dados
-### # ###
 
 print(length(acessos_alunos))
+
+### # ###
+
+
 
 ### 3 ###
 ## Utilizando o seu código de aluno da Uniritter como nome de um valor da lista, imprima uma linha informando quantos acessos
@@ -29,9 +33,12 @@ print(length(acessos_alunos))
 
 ## Dica 1: Utilize a função paste() para composição do texto que será impresso. 
 ## Dica 2: Vimos exemplos disto nos materiais dos tipos numéricos e das estruturas de dados.
-### # ###
 
 paste("O aluno alu201420317 realizou",acessos_alunos[["alu201420317"]],"acessos")
+
+### # ###
+
+
 
 ### 4 ###
 ## A operação abaixo cria um vetor com todas as quantidades de acessos por aluno.
@@ -58,9 +65,10 @@ print(length(valores_maiores))
 
 ### 5 ###
 ## Combine todas as etapas acima em uma única chamada, sem a criação dos vetores auxiliares
-### # ###
 
 print(length(acessos_alunos[acessos_alunos>11]))
+
+### # ###
 
 
 ### 6 ###
@@ -68,9 +76,12 @@ print(length(acessos_alunos[acessos_alunos>11]))
 ## Faça isso utilizando a função sum!
 
 ## Dica: Lembre que falamos sobre como o R faz conversões implícitas entre o tipo lógico e tipos numéricos
-### # ###
 
 print(sum(acessos_alunos<11))
+
+### # ###
+
+
 
 
 ### 7 ###
@@ -89,11 +100,16 @@ notas[notas == 0] <- 0
 notas[notas < 10 & notas > 0] <- 1
 notas[notas >= 10] <- 2
 
+
+
 ### 8 ###
 ## Visualização da quantidade de alunos com cada nota de participação. Esta não é uma atividade, apenas uma ilustração de como
 ## criar uma tabela com esta contagem
+### # ###
 
 table(notas)
+
+
 
 ### 9 ###
 ## Abaixo, criei uma versão modificada da lista acessos_alunos, com a inclusão de um acesso convidado.
