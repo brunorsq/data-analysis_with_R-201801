@@ -166,7 +166,10 @@ Qual a razão entre o IQR e o Desvio Absoluto da Mediana da variável REMUNERACA
 ```{r}
 print("Atividade")
 
-## Código aqui
+intervalo_interquartil <- IQR(subset_salarios$REMUNERACAO_REAIS)
+desvio_padrao <- sd(subset_salarios$REMUNERACAO_REAIS)
+
+razao <- intervalo_interquartil/desvio_padrao
 ```
 
 __Atividade II__

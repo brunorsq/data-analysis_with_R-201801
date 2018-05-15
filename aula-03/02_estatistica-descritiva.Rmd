@@ -200,7 +200,17 @@ Crie um novo dataset contendo a média e a mediana do salário por UF. Adicione 
 ```{r}
 print("Atividade")
 
-## Código aqui
+subset_salarios %>%
+  group_by(UF_EXERCICIO) %>%
+  summarise(salario_medio = mean(REMUNERACAO_REAIS), 
+            servidores = n(),
+            mediana_salario = median(REMUNERACAO_REAIS),
+            media_maior = salario_medio > mediana_salario) %>%
+  ungroup() %>%
+  group_by(media_maior) %>%
+  summarise(total = n()) %>%
+  ungroup()
+
 ```
 
 __Atividade II__
@@ -293,7 +303,16 @@ Verifique a validade deste teorema com os valores calculados.
 ```{r}
 print("Atividade")
 
-## Código aqui
+dois_desvios <- 2 * sd(subset_salarios$REMUNERACAO_REAIS)
+
+media <- mean(subset_salarios$REMUNERACAO_REAIS)
+
+subset_salarios %>%
+  filter(REMUNERACAO_REAIS <= media + dois_desvios) %>%
+  nrow() -> total
+
+total / nrow(subset_salarios)
+
 ```
 
 __Atividade II__
@@ -303,7 +322,21 @@ No dataset de salários temos os diferentes cargos ocupados pelos servidores pú
 ```{r}
 print("Atividade")
 
-## Código aqui
+subset_salarios %>%
+  group_by(DESCRICAO_CARGO) %>%
+  filter(n() > 100) %>%
+  summarise(desvio_padrao = sd(REMUNERACAO_REAIS),
+            media = mean(REMUNERACAO_REAIS),
+            cv = desvio_padrao / media,
+            qntd_func = n(),
+            menor_salario = min(REMUNERACAO_REAIS),
+            maior_salario = max(REMUNERACAO_REAIS)) %>%
+  ungroup() %>%
+  arrange(cv) %>%
+  head(10)
+
+
+
 ```
 
 __Atividade III__
@@ -313,7 +346,18 @@ Repita a Atividade II, mas listando aqueles com __maior coeficiente de variaçã
 ```{r}
 print("Atividade")
 
-## Código aqui
+subset_salarios %>%
+  group_by(DESCRICAO_CARGO) %>%
+  filter(n() > 100) %>%
+  summarise(desvio_padrao = sd(REMUNERACAO_REAIS),
+            media = mean(REMUNERACAO_REAIS),
+            cv = desvio_padrao / media,
+            qntd_func = n(),
+            menor_salario = min(REMUNERACAO_REAIS),
+            maior_salario = max(REMUNERACAO_REAIS)) %>%
+  ungroup() %>%
+  arrange(cv) %>%
+  tail(10)
 ```
 
 ![](https://mathwithbaddrawings.files.wordpress.com/2016/07/20160712085402_00021.jpg)
