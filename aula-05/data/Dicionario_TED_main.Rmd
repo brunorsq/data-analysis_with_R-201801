@@ -1,0 +1,32 @@
+---
+title: "Dicionário de Dados"
+author: "Cristofer Weber"
+date: "5/20/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## TED Talks
+
+| Variável           | Conteúdo                                                                      | Tipo |
+|:------------------:|:------------------------------------------------------------------------------|:----:|
+| comments           | Quantidade de comentários feitos nesta apresentação (sem contar _threads_)    | Numeric |
+| description        | Sinopse da apresentação                                                       | String |
+| duration           | Duração da apresentação (em segundos)                                         | Numeric |
+| event              | Nome do evento TED / TEDx onde ocorreu a apresentação                         | String |
+| film_date          | Timestamp da data da filmagem (_Unix Timestamp_)                              | Numeric |
+| languages          | Quantidade de línguas nas quais a apresentação está disponível                | Numeric |
+| main_speaker       | Nome do apresentador principal                                                | String |
+| name               | Nome da apresentação, no formato apresentador: Título                         | String |
+| num_speaker        | Quantidade de apresentadores                                                  | Numeric |
+| published_date     | Timestap da publicação da apresentação no site TED.com                        | Numeric |
+| ratings            | String JSON contendo as avaliações da apresentação. Conjunto de {id, name, count} | String |
+| related_talks      | String JSON contendo sugestões de apresentações relacionadas. {id, hero, speaker, title, duration, slug, viewed_count} | String |
+| speaker_occupation | Profissão do apresentador principal                                           | String |
+| tags               | Lista JSON de tags dos temas associados à apresentação                        | String | 
+| title              | Título da apresentação                                                        | String |
+| url                | URL da apresentação                                                           | String |
+| views              | Quantidade de visualizações da apresentação                                   | Numeric |
