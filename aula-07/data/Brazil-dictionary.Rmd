@@ -1,0 +1,32 @@
+---
+title: "Evolução das medidas de altura dos Brasileiros"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+brasileiros <- read.csv("Brazil.csv")
+
+head(brasileiros)
+```
+
+## Altura Brasileiros
+
+| Variável                 | Conteúdo                                       | Tipo    |
+|:------------------------ |:-----------------------------------------------|:------- |
+| Country                  | País de origem da medição (sempre Brazil)      | Factor  |
+| ISO                      | Sigla ISO do país de origem (sempre BR)        | Factor  |
+| Sex                      | Sexo, podendo ser __Men__ ou __Women__         | Factor  |
+| Year_of_birth            | Ano de nascimento das pessoas da amostra       | Integer |
+| Mean_height              | Altura média aos 18 anos, em cm                | Numeric |
+| Mean_height_lower_95perc | Intervalo inferior do IC (95%) da altura média | Numeric |
+| Mean_height_upper_95perc | Intervalo superior do IC (95%) da altura média | Numeric |
+
+## Resumo
+
+```{r}
+brasileiros %>%
+  select(-Country, -ISO) %>%
+  summary()
+```
+
