@@ -20,6 +20,28 @@ library(lubridate)
 ## 
 ### # ####
 
+salarios %>%
+  group_by(DESCRICAO_CARGO) %>%
+  filter(n() >= 200) %>%
+  summarise(correlacao = cor( x = year(DATA_INGRESSO_ORGAO), y = year(DATA_DIPLOMA_INGRESSO_SERVICOPUBLICO)),
+            pos_neg = ifelse(correlacao > 0,"Positiva","Negativa"),
+            grau = if(correlacao <= 0.3){
+                      "Desprezível"
+                    }else if(correlacao <= 0.5){
+                      "Fraca"
+                    }else if(correlacao <= 0.7){
+                      "Moderada"
+                    }else if(correlacao <= 0.9){
+                      "Forte"
+                    }else{
+                      "Muito Forte"
+                    }
+            ) %>%
+  ungroup() %>%
+  select (DESCRICAO_CARGO,correlacao,pos_neg,grau) -> cargo_correlacao
+
+cargo_correlacao
+
 ### 2 ###
 ##
 ## - A partir do dataset do exercício anterior, selecione os 10 cargos de correlação mais forte (seja positiva ou negativa) e os 
@@ -29,4 +51,45 @@ library(lubridate)
 ##   (caso haja diferença)
 ##
 ### # ###
+
+cargo_correlacao %>%
+  arrange(desc(abs(correlacao)))%>%
+  head(10) -> cor_forte
+
+paste("10 cargos com correlação mais forte: ",paste(c(cor_forte$DESCRICAO_CARGO),collapse = ", "))
+
+cargo_correlacao %>%
+  arrange(abs(correlacao))%>%
+  head(10) -> cor_fraca
+
+paste("10 cargos com correlação mais fraca: ",paste(c(cor_fraca$DESCRICAO_CARGO),collapse = ", "))
+
+cargo_minmax_cor <- merge(cor_fraca,cor_forte,all = TRUE)%>%
+  arrange(desc(abs(correlacao)))
+
+salarios %>%
+  filter(DESCRICAO_CARGO %in% cargo_minmax_cor$DESCRICAO_CARGO) %>%
+  group_by(DESCRICAO_CARGO,ORGSUP_LOTACAO) %>%
+  summarise(quantidade = n()) %>%
+  arrange(desc(quantidade)) %>%
+  head(1) %>%
+  ungroup() -> moda_orgsuplotacao
+
+moda_orgsuplotacao
+  
+salarios %>%
+  filter(DESCRICAO_CARGO %in% cargo_minmax_cor$DESCRICAO_CARGO) %>%
+  group_by(DESCRICAO_CARGO,ORGSUP_EXERCICIO) %>%
+  summarise(quantidade = n()) %>%
+  arrange(desc(quantidade)) %>%
+  head(1) %>%
+  ungroup() -> moda_orgsupexercicio
+
+moda_orgsupexercicio
+
+
+paste("Moda do orgao de lotacao: ", moda_orgsuplotacao$DESCRICAO_CARGO)
+paste("Moda do orgao de exercicio: ", moda_orgsupexercicio$DESCRICAO_CARGO)
+
+print("Analise: Nao identifiquei diferenca entre as modas, em ambas o resultado foi AGENTE DE SAUDE PUBLICA")
 

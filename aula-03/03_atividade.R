@@ -16,8 +16,9 @@ salarios <- read_csv("aula-03/data/201802_dados_salarios_servidores.csv.gz")
 salarios$REMUNERACAO_FINAL <- salarios$REMUNERACAO_REAIS + (salarios$REMUNERACAO_DOLARES * 3.2421)
 
 salarios %>%
-filter(REMUNERACAO_FINAL >= 900)
+filter(REMUNERACAO_FINAL >= 900) -> salarios
 
+salarios
 
 ### 2 ####
 ## 
@@ -30,7 +31,7 @@ salarios %>% count(UF_EXERCICIO) %>% pull(UF_EXERCICIO) -> ufs # EXEMPLO
 ## 
 ### # ####
 
-## Comentario: Nao sabia se devia usar o ORG_LOTACAO ou ORGSUP_LOTACAO. Entao utilizei o ORG_LOTACAO, porem nao sei se esta correto.
+print("Comentario: Nao sabia se devia usar o ORG_LOTACAO ou ORGSUP_LOTACAO. Entao utilizei o ORG_LOTACAO, porem nao sei se esta correto.")
 
 salarios %>%
   filter(ORG_LOTACAO != ORGSUP_EXERCICIO) %>%
@@ -40,7 +41,7 @@ salarios %>%
   head(5) %>%
   pull(DESCRICAO_CARGO) -> cargos_diferente_lotacao
 
-print(cargos_diferente_lotacao)
+cargos_diferente_lotacao
   
 
 ### 3 ####
@@ -75,3 +76,5 @@ salarios %>%
             desvio_absoluto = median(abs(REMUNERACAO_FINAL - mediana)),
             menor_salario = min(REMUNERACAO_FINAL),
             maior_salario = max(REMUNERACAO_FINAL))
+
+print("Analise: Quem não trabalha no mesmo orgão tende a ganhar mais.")

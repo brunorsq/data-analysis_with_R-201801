@@ -170,6 +170,7 @@ intervalo_interquartil <- IQR(subset_salarios$REMUNERACAO_REAIS)
 desvio_padrao <- sd(subset_salarios$REMUNERACAO_REAIS)
 
 razao <- intervalo_interquartil/desvio_padrao
+razao
 ```
 
 __Atividade II__
@@ -180,7 +181,24 @@ Calcule o Desvio Padrão, o Desvio Absoluto da Mediana e o IQR do tempo de ingre
 ```{r}
 print("Atividade")
 
-## Código aqui
+calc_desv_abs_mediana <- function(x) {
+  (dam_data <- median( abs( x - median( x ))))
+
+  (md_data <- median( x ))
+
+  retorno <- dam_data / md_data
+  
+  return(retorno)
+}
+
+ano_data_diploma <- year(subset_salarios$DATA_DIPLOMA_INGRESSO_SERVICOPUBLICO)
+
+subset_salarios %>%
+  summarise(intervalo_interquartil <- IQR(ano_data_diploma),
+            desvio_padrao <- sd(ano_data_diploma),
+            desvio_absoluto <- calc_desv_abs_mediana(ano_data_diploma)
+  )
+
 ```
 
 >> FIM ATIVIDADE
@@ -240,7 +258,25 @@ E a interpretação usual é a seguinte:
 ```{r}
 print("Atividade")
 
-## Código aqui
+correlacao <- cor(x = year(subset_salarios$DATA_INGRESSO_ORGAO), y = year(subset_salarios$DATA_DIPLOMA_INGRESSO_SERVICOPUBLICO))
+pos_neg <- ifelse(correlacao > 0, "Positiva","Negativa")
+grau <- if(correlacao <= 0.3){
+  "Desprezível"
+}else if(correlacao <= 0.5){
+  "Fraca"
+}else if(correlacao <= 0.7){
+  "Moderada"
+}else if(correlacao <= 0.9){
+  "Forte"
+}else{
+  "Muito Forte"
+}
+
+correlacao
+pos_neg
+grau
+
+
 ```
 
 >> FIM ATIVIDADE
