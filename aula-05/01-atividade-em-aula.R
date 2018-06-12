@@ -167,7 +167,16 @@ ted_main %>%
 #   * o coeficiente de variação da quantidade de línguas
 ### EXIBA SOMENTE OS EVENTOS COM MAIS DE 10 APRESENTAÇÕES
 
-
+ted_main %>%
+  group_by(event) %>%
+  filter(str_detect(event,"^TED") && views > median(views)) %>%
+  summarise(apresentacoes = n(),
+            ano = min(year(film_date)),
+            media = mean(languages),
+            desvio_padrao = sd(languages),
+            coeficiente_variacao = desvio_padrao/media
+            ) %>%
+  filter(apresentacoes > 10)
 
 
 # Calcule e classifique as seguintes correlações
@@ -176,17 +185,53 @@ ted_main %>%
 #     * Quantidade de visualizações e Quantidade de Comentários
 #     * Quantidade de Comentários e Quantidade de línguas
 
+grau_correlacao = function(correlacao){
+  if(correlacao <= 0.3){
+    return("Desprezível")
+  }else if(correlacao <= 0.5){
+    return("Fraca")
+  }else if(correlacao <= 0.7){
+    return("Moderada")
+  }else if(correlacao <= 0.9){
+    return("Forte")
+  }else{
+    return("Muito Forte")
+  }
+}
 
-
+ted_main%>%
+  summarise(vis_lin = cor(views,languages),
+            vis_lin_grau = grau_correlacao(vis_lin),
+            vis_dur = cor(views,duration),
+            vis_dur_grau = grau_correlacao(vis_dur),
+            vis_com = cor(views,comments),
+            vis_com_grau = grau_correlacao(vis_com),
+            com_lan = cor(comments,languages),
+            com_lan_grau = grau_correlacao(com_lan),
+            )
 
 # Descarte os vídeos cuja duração seja maior que 3 desvios padrões da média. Calcule novamente as 5 correlações solicitadas
 
-
-
+ted_main %>%
+  filter(duration < as.duration(mean(duration)+(sd(duration)*3))) %>%
+  summarise(vis_lin = cor(views,languages),
+            vis_lin_grau = grau_correlacao(vis_lin),
+            vis_dur = cor(views,duration),
+            vis_dur_grau = grau_correlacao(vis_dur),
+            vis_com = cor(views,comments),
+            vis_com_grau = grau_correlacao(vis_com),
+            com_lan = cor(comments,languages),
+            com_lan_grau = grau_correlacao(com_lan),
+  )
 
 # Utilizando o data frame original, crie um dataframe com a mediana da duração dos vídeos por ano de filmagem. Calcule a correlação entre o ano e a mediana da duração
 # e interprete o resultado
 
+ted_main %>%
+  group_by(year(film_date)) %>%
+  summarise(mediana = median(duration)) -> ano_mediana
 
+ano_mediana %>%
+  summarise(correlacao = cor(`year(film_date)`,mediana))
 
-
+print("Com o passar dos anos a duração dos eventos foram diminuindo, a correlação entre ano e mediana da duração é muito forte.")
